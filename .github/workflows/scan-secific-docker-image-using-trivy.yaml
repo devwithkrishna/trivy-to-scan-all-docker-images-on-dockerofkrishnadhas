@@ -27,7 +27,6 @@ jobs:
             echo "Scanning ended for image: $image at $(date)"
             echo "Duration for image $image: $duration seconds"
             docker system prune -af
-          done
     - name: Completed
       run: |
         echo "program completed successfully"
