@@ -1,0 +1,53 @@
+name: scan-docker-images-using-trivy
+on:
+  schedule:
+    - cron: '0 0 * * 0' # weekly once
+  workflow_dispatch:
+    inputs:
+      dockerhub_username:
+        description: 'Dockerhub username'
+        required: true
+        type: string
+        default: 'dockerofkrishnadhas'
+
+run-name: scan-docker-images-using-trivy-from-dockerofkrishnadhas-dockerhub
+jobs:
+  scan-docker-images-using-trivy-from-dockerofkrishnadhas-dockerhub:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v4
+    - name: set up python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: package installations
+      run: |
+        pip install pipenv
+        pipenv install
+    - name: execute python program
+      run: |
+          pipenv run python3 get_all_docker_image_tags.py --account_name ${{ inputs.dockerhub_username }}
+    - name: check files
+      run: |
+        ls -la
+    - name: set up docker and scan docker image  for vulnerabilities
+      uses: docker-practice/actions-setup-docker@master
+    -  run: |
+        set -x
+        docker version
+        images=$(cat docker_images_details_dockerofkrishnadhas.json | jq -r '.[]')
+        for image in $images
+          do
+            docker pull $image
+            start_time=$(date +%s)
+            echo "Scanning started for image: $image at $(date)"
+            docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $image
+            end_time=$(date +%s)
+            duration=$((end_time - start_time))
+            echo "Scanning ended for image: $image at $(date)"
+            echo "Duration for image $image: $duration seconds"
+          done
+    - name: Completed
+      run: |
+        echo "program completed successfully"
