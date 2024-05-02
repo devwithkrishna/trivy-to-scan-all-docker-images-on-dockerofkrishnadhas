@@ -1,4 +1,4 @@
-name: scan-docker-images-using-trivy
+name: scan--all-docker-images-in-dockerofkrishnadhas-using-trivy
 on:
   schedule:
     - cron: '0 0 * * 0' # weekly once
