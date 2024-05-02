@@ -1,0 +1,33 @@
+name: scan-docker-images-using-trivy-dockerhubofkrishnadhas
+on:
+  workflow_dispatch:
+    inputs:
+      docker_image_name:
+        description: 'complete image name. eg: dockerofkrishnadhas/alpine:latest'
+        required: true
+        type: string
+        default: 'dockerofkrishnadhas/alpine:latest'
+
+run-name: scan-docker-image-${{ inputs.docker_image_name }}-using-trivy
+jobs:
+  scan-docker-image-using-trivy-from-dockerofkrishnadhas:
+    runs-on: ubuntu-latest
+    steps:
+    - name: set up docker and scan docker image  for vulnerabilities
+      uses: docker-practice/actions-setup-docker@master
+    -  run: |
+        set -x
+        docker version
+            docker pull ${{inputs.docker_image_name}}
+            start_time=$(date +%s)
+            echo "Scanning started for image:  ${{inputs.docker_image_name}} at $(date)"
+            docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${{inputs.docker_image_name}}
+            end_time=$(date +%s)
+            duration=$((end_time - start_time))
+            echo "Scanning ended for image: $image at $(date)"
+            echo "Duration for image $image: $duration seconds"
+            docker system prune -af
+          done
+    - name: Completed
+      run: |
+        echo "program completed successfully"
