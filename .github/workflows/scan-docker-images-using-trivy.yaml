@@ -26,8 +26,10 @@ jobs:
         pip install pipenv
         pipenv install
     - name: execute python program
+      env:
+        dockerhub_username: 'dockerofkrishnadhas'
       run: |
-          pipenv run python3 get_all_docker_image_tags.py --account_name ${{ inputs.dockerhub_username }}
+          pipenv run python3 get_all_docker_image_tags.py --account_name $dockerhub_username
     - name: check files
       run: |
         ls -la
