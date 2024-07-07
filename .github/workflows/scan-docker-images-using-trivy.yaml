@@ -49,8 +49,11 @@ jobs:
             duration=$((end_time - start_time))
             echo "Scanning ended for image: $image at $(date)"
             echo "Duration for image $image: $duration seconds"
+            df -hT
+            docker system df
             echo "Removing image $image"
             docker image rmi -f $image
+            docker system prune -f -a
           done
     - name: Completed
       run: |
