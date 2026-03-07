@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 requests = "=2.32.4"
 argparse = "=1.4.0"
-python-dotenv = "=1.0.1"
+python-dotenv = "=1.2.2"
 
 
 [requires]
